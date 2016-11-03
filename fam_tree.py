@@ -5,9 +5,10 @@ G = nx.Graph()
 #G = nx.path_graph(8)
 
 
-pop=4
+pop=20
 kid_cnt=9
-generation_cnt=8
+generation_cnt=6
+DIVORCE_RATE=10
 
 for i in range(pop):
     G.add_node(i)
@@ -41,6 +42,21 @@ def expand(G,level,pop_array,kid_cnt):
                 #print("Processing kid %d"%kids)
         except IndexError:
             pass
+    #
+    #Divorce time !!!
+    #From the pop_array (these people have just had kids)
+    #We need to pick 3% - and then place them in the new_born array
+    #So they can be married again and have kids again
+    df=open("divorce_list.txt","a")
+    num_of_divorce = int(len(pop_array)*DIVORCE_RATE/100)
+    for divorce_id in range(num_of_divorce):
+
+        divorce_person_idx=random.randint(0,len(pop_array)-1)
+        div_id = pop_array[divorce_person_idx]
+        new_born.append(div_id)
+        df.write(str.format('Divorced {}\n',div_id))
+
+    df.close()
 
     return new_born
 
